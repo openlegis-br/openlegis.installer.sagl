@@ -1,0 +1,1 @@
+enscript -F Times-Roman11 -L1 -b'||Fls. $%' -o- < <(for i in $(seq "$(pdftk "$1" dump_data | grep "Num" | cut -d":" -f2 | tail -n1)"); do echo; done) | ps2pdf - | pdftk "$1" multistamp - output "${1%.pdf}-integral.pdf"

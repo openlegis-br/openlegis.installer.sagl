@@ -1,0 +1,50 @@
+Metadata-Version: 2.1
+Name: openlegis.recipe.sagl
+Version: 1.0a4
+Summary: Recipe to create SAGL as part of a buildout run
+Home-page: https://github.com/openlegis-br
+Author: OpenLegis
+Author-email: contato@openlegis.com.br
+License: ZPL
+Keywords: sagl openlegis buildout recipe
+Classifier: Framework :: Buildout
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: License :: OSI Approved :: Zope Public License
+License-File: LICENSE
+Requires-Dist: setuptools
+Requires-Dist: zc.buildout
+Requires-Dist: zope.globalrequest
+Provides-Extra: tests
+Requires-Dist: zope.testing; extra == "tests"
+Requires-Dist: zc.buildout; extra == "tests"
+
+Introduction
+************
+
+This recipe enables you to create SAGL as part of a buildout run.
+
+.. contents::
+
+
+Detailed Documentation
+**********************
+
+Contributors
+************
+
+- OpenLegis, Author
+
+
+Change history
+**************
+
+1.0 (2020-11-06)
+==================
+
+- Estrutura inicial
+
+
+Download
+********

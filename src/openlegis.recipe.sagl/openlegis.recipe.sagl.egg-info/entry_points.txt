@@ -1,0 +1,2 @@
+[zc.buildout]
+default = openlegis.recipe.sagl:Recipe

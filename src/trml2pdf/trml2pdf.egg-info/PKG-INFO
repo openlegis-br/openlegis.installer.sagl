@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: trml2pdf
+Version: 1.2
+Summary: Tiny RML2PDF is a tool to easily create PDF document without programming.
+Author: Fabien Pinckaers
+Author-email: fp@tiny.be
+License: LGPL
+License-File: LICENSE.txt

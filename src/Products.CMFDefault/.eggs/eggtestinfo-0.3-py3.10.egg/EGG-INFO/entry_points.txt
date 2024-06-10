@@ -1,0 +1,3 @@
+[egg_info.writers]
+test_info.txt = eggtestinfo:write_test_info
+

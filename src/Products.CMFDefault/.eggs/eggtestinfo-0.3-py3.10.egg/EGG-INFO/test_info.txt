@@ -1,0 +1,4 @@
+test_module = 
+test_suite = test_egginfo
+test_loader = None
+tests_require = 

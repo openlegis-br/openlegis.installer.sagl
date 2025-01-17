@@ -457,7 +457,8 @@ def toUnicode(value, charset=None):
     """ Convert value to unicode.
     """
     if isinstance(value, str):
-        return charset and str(value, charset) or str(value)
+        #return charset and str(value, charset) or str(value)
+        return charset and '{}'.format(value, charset) or str(value)
     elif isinstance(value, list):
         return [ toUnicode(val, charset) for val in value ]
     elif isinstance(value, tuple):

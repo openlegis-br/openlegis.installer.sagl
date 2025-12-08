@@ -3,7 +3,7 @@
 This module contains the tool of openlegis.recipe.sagl
 """
 import os
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 
 def read(*rnames):
@@ -53,7 +53,7 @@ setup(name='openlegis.recipe.sagl',
     author_email='contato@openlegis.com.br',
     url='https://github.com/openlegis-br',
     license='ZPL',
-    packages=find_packages(exclude=['ez_setup']),
+    packages=find_namespace_packages(exclude=['ez_setup']),
     namespace_packages=['openlegis', 'openlegis.recipe'],
     include_package_data=True,
     zip_safe=False,

@@ -9,7 +9,7 @@ from setuptools import setup, find_namespace_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.0a4'
+version = '1.0'
 
 long_description = (
     read('README.rst')
@@ -54,7 +54,6 @@ setup(name='openlegis.recipe.sagl',
     url='https://github.com/openlegis-br',
     license='ZPL',
     packages=find_namespace_packages(exclude=['ez_setup']),
-    namespace_packages=['openlegis', 'openlegis.recipe'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

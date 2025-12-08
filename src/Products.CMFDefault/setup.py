@@ -1,6 +1,6 @@
 import os
 from setuptools import setup
-from setuptools import find_packages
+from setuptools import find_namespace_packages
 
 NAME = 'CMFDefault'
 
@@ -38,7 +38,7 @@ setup(name='Products.%s' % NAME,
       author_email="zope-cmf@zope.org",
       url="http://pypi.python.org/pypi/Products.CMFDefault",
       license="ZPL 2.1 (http://www.zope.org/Resources/License/ZPL-2.1)",
-      packages=find_packages(),
+      packages=find_namespace_packages(),
       include_package_data=True,
       namespace_packages=['Products'],
       zip_safe=False,

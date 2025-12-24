@@ -23,8 +23,11 @@ from io import BytesIO
 from AccessControl.SecurityInfo import ModuleSecurityInfo
 from Acquisition import aq_get
 from App.Common import package_home
-from pkg_resources import DistributionNotFound
-from pkg_resources import get_distribution
+try:
+    from importlib.metadata import distribution, PackageNotFoundError
+except ImportError:
+    # Fallback for Python < 3.8
+    from importlib_metadata import distribution, PackageNotFoundError
 from ZTUtils.Zope import complex_marshal
 from zope.component import getUtility
 from zope.component import queryUtility
@@ -41,15 +44,15 @@ from Products.CMFDefault.exceptions import IllegalHTML
 security = ModuleSecurityInfo( 'Products.CMFDefault.utils' )
 
 try:
-    get_distribution('Products.CMFCalendar')
-except DistributionNotFound:
+    distribution('Products.CMFCalendar')
+except PackageNotFoundError:
     PRODUCTS_CMFCALENDAR_INSTALLED = False
 else:
     PRODUCTS_CMFCALENDAR_INSTALLED = True
 
 try:
-    get_distribution('Products.CMFUid')
-except DistributionNotFound:
+    distribution('Products.CMFUid')
+except PackageNotFoundError:
     PRODUCTS_CMFUID_INSTALLED = False
 else:
     PRODUCTS_CMFUID_INSTALLED = True

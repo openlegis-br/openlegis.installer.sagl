@@ -1,2 +1,0 @@
-openlegis
-openlegis.recipe

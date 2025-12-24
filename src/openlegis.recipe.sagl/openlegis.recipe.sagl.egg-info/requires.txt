@@ -1,7 +1,0 @@
-setuptools
-zc.buildout
-zope.globalrequest
-
-[tests]
-zope.testing
-zc.buildout

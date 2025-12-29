@@ -73,7 +73,7 @@ Abra `migrations/versions/exemplo_migracao_dados.py` e configure:
 ```python
 # URL do banco de origem (de onde os dados serão copiados)
 # Formato: mysql+pymysql://usuario:senha@host:porta/banco
-source_db_url = "mysql+pymysql://root:openlegis@127.0.0.1:3306/cmhortolandia"
+source_db_url = "mysql+pymysql://root:senha@127.0.0.1:3306/cmexemplo"
 ```
 
 **Formato**: `mysql+pymysql://usuario:senha@host:porta/banco`
@@ -87,7 +87,7 @@ target_connection = op.get_bind()
 target_db_url = str(target_connection.engine.url)
 
 # Opção 2: Especificar manualmente (descomente e ajuste se necessário)
-# target_db_url = "mysql+pymysql://root:openlegis@127.0.0.1:3306/openlegis"
+# target_db_url = "mysql+pymysql://root:senha@127.0.0.1:3306/openlegis"
 ```
 
 #### 1.3. Tabelas (Opcional)

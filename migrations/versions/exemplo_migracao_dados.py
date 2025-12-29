@@ -525,8 +525,8 @@ def upgrade() -> None:
     
     # URL do banco de origem (de onde os dados serão copiados)
     # Formato: mysql+pymysql://usuario:senha@host:porta/banco
-    # Exemplo: mysql+pymysql://root:openlegis@127.0.0.1:3306/cmhortolandia
-    source_db_url = "mysql+pymysql://root:openlegis@127.0.0.1:3306/cmhortolandia"
+    # Exemplo: mysql+pymysql://root:openlegis@127.0.0.1:3306/cmexemplo
+    source_db_url = "mysql+pymysql://root:senha@127.0.0.1:3306/cmexemplo"
     
     # URL do banco de destino (para onde os dados serão copiados)
     # IMPORTANTE: Use as MESMAS credenciais que funcionam no teste manual
@@ -534,7 +534,7 @@ def upgrade() -> None:
     
     # Opção 1: Especificar manualmente (RECOMENDADO - mais confiável)
     # Use as MESMAS credenciais que funcionam no teste manual: mysql -u root -p -h 127.0.0.1
-    target_db_url = "mysql+pymysql://root:openlegis@127.0.0.1:3306/openlegis"
+    target_db_url = "mysql+pymysql://root:senha@127.0.0.1:3306/openlegis"
     
     # Opção 2: Usar a conexão do Alembic (usa variáveis de ambiente MYSQL_*)
     # ATENÇÃO: Pode ter credenciais diferentes das variáveis de ambiente

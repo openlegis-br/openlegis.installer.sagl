@@ -1,0 +1,268 @@
+[buildout]
+extends =
+    https://zopefoundation.github.io/Zope/releases/6.0b2/versions-prod.cfg
+    versions.cfg
+
+parts =
+    zeo-master
+    instance
+    instance1
+    instance2
+    instance3
+    instance4
+    supervisor
+    omelette
+    zopepy
+    import
+    extensions
+    autostart
+    restart-celery
+    restart-instances
+    restart-soffice
+    tmpcronjob
+    pack-semanal
+    chown
+
+extensions = 
+    mr.developer
+
+package-name = openlegis.sagl
+
+effective-user = zope
+
+root-directory = ${buildout:directory}
+
+# MySQL configuration
+mysql-host = localhost
+mysql-user = root
+mysql-pass = openlegis
+mysql-db = openlegis
+
+sources-dir = src
+
+develop =
+    src/openlegis.sagl
+
+auto-checkout = 
+    openlegis.sagl
+    Products.CMFDefault
+    trml2pdf
+
+eggs = 
+    appy
+    asn1crypto
+    decorator
+    five.grok
+    html2rml
+    lxml
+    mechanize
+    ndg-httpsclient
+    openlegis.sagl
+    Pillow
+    Products.CMFCore
+    Products.CMFDefault
+    Products.CMFUid
+    Products.DCWorkflow
+    Products.ExternalEditor
+    Products.ExternalMethod    
+    Products.MailHost
+    Products.PluggableAuthService
+    Products.PortalTransforms
+    Products.Sessions
+    Products.SiteErrorLog
+    Products.TemporaryFolder
+    Products.ZMySQLDA
+    Products.ZODBMountPoint
+    pyasn1
+    pypdf
+    python-barcode
+    python-dateutil
+    qrcode
+    reportlab
+    requests
+    sgmllib3k
+    simplejson
+    six
+    tempstorage
+    trml2pdf
+    Werkzeug
+    z3c.autoinclude
+    zLOG
+    zope.app.container
+    zope.file
+    ZopeUndo
+    z3c.saconfig
+    zope.sqlalchemy
+    sqlalchemy
+    alembic
+    mysqlclient
+    pymysql
+    celery[redis]
+    aiofiles
+    openpyxl
+    pikepdf
+    pymupdf
+    websockets 
+    psutil 
+    pytesseract 
+    ocrmypdf
+
+zcml = ${buildout:package-name}
+
+[sources]
+openlegis.sagl = git https://github.com/openlegis-br/openlegis.sagl.git
+Products.CMFDefault = fs Products.CMFDefault
+trml2pdf = fs trml2pdf
+
+[zeo-master]
+recipe = plone.recipe.zeoserver
+effective-user = ${buildout:effective-user}
+zeo-address = 127.0.0.1:8500
+#monitor-address = 127.0.0.1:8501
+file-storage = ${buildout:directory}/var/filestorage/Data.fs
+cache-size = 128MB
+pack-days = 0
+pack-keep-old = false
+# Configuração adicional para múltiplos storages e mount points
+zeo-conf-additional = 
+    <filestorage 2>
+      path ${buildout:directory}/var/filestorage/sapl_documentos.fs
+      mount-point /sagl/sapl_documentos
+    </filestorage> 
+
+[instance]
+recipe = plone.recipe.zope2instance
+http-address = 8080
+user = admin:openlegis
+zeo-client = True
+zeo-address = 127.0.0.1:8500
+zeo-client-cache-size = 100MB
+zope-conf-additional =  
+    # Proteção DoS
+    <dos_protection>
+      form-memory-limit 4MB
+    </dos_protection>
+environment-vars =
+    PYTHON_EGG_CACHE ${buildout:directory}/var/.python-eggs
+    TEMP ${buildout:directory}/var/tmp
+    TMP ${buildout:directory}/var/tmp
+    INSTALL_HOME ${buildout:directory}
+    PTS_LANGUAGES en, es, pt-br
+    zope_i18n_allowed_languages en, es, pt-br
+    zope_i18n_compile_mo_files true
+    TZ America/Sao_Paulo
+    MYSQL_HOST ${buildout:mysql-host}
+    MYSQL_USER ${buildout:mysql-user}
+    MYSQL_PASS ${buildout:mysql-pass}
+    MYSQL_DB ${buildout:mysql-db}
+zcml-additional =
+  <configure xmlns="http://namespaces.zope.org/db">
+    <include package="z3c.saconfig" file="meta.zcml" />
+    <engine name="meu_db" url="mysql+pymysql://${buildout:mysql-user}:${buildout:mysql-pass}@${buildout:mysql-host}/${buildout:mysql-db}?charset=utf8mb4" />
+    <session name="minha_sessao" engine="meu_db" />
+  </configure>
+eggs =
+    ${buildout:eggs}
+zcml =
+    ${buildout:zcml}
+
+[instance1]
+<= instance
+http-address = 8081
+access-log-args  = (r"${buildout:directory}/var/log/instance1-access.log", "a")
+event-log-args = (r"${buildout:directory}/var/log/instance1.log", )
+
+[instance2]
+<= instance
+http-address = 8082
+access-log-args  = (r"${buildout:directory}/var/log/instance2-access.log", "a")
+event-log-args = (r"${buildout:directory}/var/log/instance2.log", )
+
+[instance3]
+<= instance
+http-address = 8083
+access-log-args  = (r"${buildout:directory}/var/log/instance3-access.log", "a")
+event-log-args = (r"${buildout:directory}/var/log/instance3.log", )
+
+[instance4]
+<= instance
+http-address = 8084
+access-log-args  = (r"${buildout:directory}/var/log/instance4-access.log", "a")
+event-log-args = (r"${buildout:directory}/var/log/instance4.log", )
+
+[supervisor]
+recipe = collective.recipe.supervisor
+plugins = superlance
+port = 9001
+user = openlegis
+password = openlegis
+serverurl = http://127.0.0.1:9001
+programs =
+    1 zeo-master (autostart=true) ${buildout:directory}/bin/zeo-master [fg] false ${buildout:effective-user}
+    2 celery     (autorestart=true directory=${buildout:directory}/src/openlegis.sagl startsecs=10 stopwaitsecs=10) ${buildout:directory}/bin/celery [-A tasks worker -Q celery,prefeitura --loglevel=info -n celery@sagl6-worker]
+    3 soffice    (autorestart=true) /usr/lib/libreoffice/program/soffice [--headless --nologo --nodefault --nofirststartwizard "--accept=socket,host=0.0.0.0,port=2002;urp;"] true  
+    4 instance   (autostart=true startsecs=3)   ${buildout:directory}/bin/instance  [console]  true  ${buildout:effective-user}
+    5 instance1  (autostart=true startsecs=5)   ${buildout:directory}/bin/instance1 [console]  true  ${buildout:effective-user}
+    6 instance2  (autostart=true startsecs=5)   ${buildout:directory}/bin/instance2 [console]  true  ${buildout:effective-user}
+    7 instance3  (autostart=true startsecs=5)   ${buildout:directory}/bin/instance3 [console]  true  ${buildout:effective-user}
+    8 instance4  (autostart=true startsecs=5)   ${buildout:directory}/bin/instance4 [console]  true  ${buildout:effective-user}
+groups =
+    1 services zeo-master,soffice,celery
+    2 instances instance,instance1,instance2,instance3,instance4
+
+logfile = ${buildout:directory}/var/log/supervisord.log
+loglevel = info
+pidfile = ${buildout:directory}/var/supervisord.pid
+nodaemon = false
+
+[extensions]
+recipe = plone.recipe.command
+command = cp -r ${buildout:directory}/src/openlegis.sagl/openlegis/sagl/Extensions ${buildout:directory}/parts/instance/
+
+[omelette]
+recipe = collective.recipe.omelette
+eggs = ${instance:eggs}
+
+[zopepy]
+recipe = zc.recipe.egg
+interpreter = zopepy
+eggs =
+    Zope[wsgi]
+
+[import]
+recipe = plone.recipe.command
+command = cp ${buildout:directory}/src/openlegis.sagl/import/*.zexp ${buildout:directory}/var/instance/import/
+
+[chown]
+recipe = plone.recipe.command
+command = chown -R ${buildout:effective-user}:${buildout:effective-user} ${buildout:directory}
+
+[autostart]
+recipe = z3c.recipe.usercrontab
+times = @reboot
+command = ${buildout:directory}/bin/supervisord
+
+[restart-celery]
+recipe = z3c.recipe.usercrontab
+times = 0 */6 * * *
+command = ${buildout:directory}/bin/supervisorctl restart services:celery
+
+[restart-instances]
+recipe = z3c.recipe.usercrontab
+times = 0 1 * * *
+command = ${buildout:directory}/bin/supervisorctl restart instances:
+
+[restart-soffice]
+recipe = z3c.recipe.usercrontab
+times = 0 */4 * * *
+command =  ${buildout:directory}/bin/supervisorctl restart services:soffice
+
+[tmpcronjob]
+recipe = z3c.recipe.usercrontab
+times = 0 */8 * * *
+command = rm -rf ${buildout:directory}/var/tmp/processo_*
+
+[pack-semanal]
+recipe = z3c.recipe.usercrontab
+times = 0 4 * * 7
+command = ${buildout:directory}/bin/zeopack -h 127.0.0.1 -p 8500
